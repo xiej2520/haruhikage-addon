@@ -46,6 +46,14 @@ tasks.withType(JavaCompile).configureEach {
 	it.options.release = 8
 }
 
+tasks.named('runClient', JavaExec) {
+	executable = file(".share/java8/bin/java")
+}
+
+tasks.named('runServer', JavaExec) {
+	executable = file(".share/java8/bin/java")
+}
+
 java {
 	// Still required by IDEs such as Eclipse and Visual Studio Code
 	sourceCompatibility = JavaVersion.VERSION_1_8

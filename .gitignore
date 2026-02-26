@@ -34,3 +34,4 @@ workspace/
 *.DS_Store
 
 lib/
+.share
