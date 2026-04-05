@@ -122,4 +122,10 @@ public class HaruhikageAddonSettings {
     )
     public static boolean logIttEnd = false;
 
+    @Rule(
+        desc = "Send chunk data for unpopulated chunks, i.e. make invisible chunks not invisible",
+        categories = {fallingblock},
+        options = {"true", "false"}
+    )
+    public static boolean sendInvisibleChunks = false;
 }

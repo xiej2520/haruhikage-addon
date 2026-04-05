@@ -7,7 +7,9 @@
   "mixins": [
     "EndGatewayBlockEntityMixin",
     "LiquidPocketFeatureMixin",
-    "WorldMixin"
+    "WorldMixin",
+    "LiquidPocketFeatureMixin",
+    "ChunkHolderMixin"
   ],
   "client": [
     "BeaconBlockMixin",
