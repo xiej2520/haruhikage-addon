@@ -5,7 +5,8 @@
   "refmap": "haruhikage-addon.refmap.json",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "EndGatewayBlockEntityMixin"
+    "EndGatewayBlockEntityMixin",
+    "LiquidPocketFeatureMixin"
   ],
   "client": [
     "BeaconBlockMixin",

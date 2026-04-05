@@ -108,5 +108,11 @@ public class HaruhikageAddonSettings {
     )
     public static boolean disableTerrainPopulation = false;
 
+    @Rule(
+        desc = "Place water pockets instead of lava for non-exposed pockets, to see which is which in the nether",
+        categories = {fallingblock},
+        options = {"true", "false"}
+    )
+    public static boolean placeWaterInsteadOfLavaPockets = false;
 
 }
