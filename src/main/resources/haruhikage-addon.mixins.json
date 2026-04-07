@@ -8,7 +8,7 @@
     "EndGatewayBlockEntityMixin",
     "LiquidPocketFeatureMixin",
     "WorldMixin",
-    "LiquidPocketFeatureMixin",
+    "NetherChunkGeneratorMixin",
     "ChunkHolderMixin"
   ],
   "client": [

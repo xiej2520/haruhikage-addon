@@ -128,4 +128,12 @@ public class HaruhikageAddonSettings {
         options = {"true", "false"}
     )
     public static boolean sendInvisibleChunks = false;
+
+    @Rule(
+        desc = "Logs Liquid Pocket population",
+        categories = {fallingblock},
+        options = {"true", "false"}
+    )
+    public static boolean logLiquidPocketPopulation = false;
+
 }

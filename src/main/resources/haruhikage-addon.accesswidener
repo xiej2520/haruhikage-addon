@@ -1,5 +1,7 @@
 accessWidener v2 named
 
+accessible field net/minecraft/world/gen/feature/LiquidPocketFeature canBeExposedToAir Z
+
 # for /palette command
 accessible field net/minecraft/world/chunk/PalettedContainer storage Lnet/minecraft/util/BitStorage;
 accessible field net/minecraft/world/chunk/PalettedContainer palette Lnet/minecraft/world/chunk/Palette;
