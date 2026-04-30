@@ -6,7 +6,8 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "EndGatewayBlockEntityMixin",
-    "LiquidPocketFeatureMixin"
+    "LiquidPocketFeatureMixin",
+    "WorldMixin"
   ],
   "client": [
     "BeaconBlockMixin",

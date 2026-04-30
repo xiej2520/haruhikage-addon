@@ -115,4 +115,11 @@ public class HaruhikageAddonSettings {
     )
     public static boolean placeWaterInsteadOfLavaPockets = false;
 
+    @Rule(
+        desc = "log all ITT turning off",
+        categories = {fallingblock},
+        options = {"true", "false"}
+    )
+    public static boolean logIttEnd = false;
+
 }
