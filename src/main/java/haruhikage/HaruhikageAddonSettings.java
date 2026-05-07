@@ -136,4 +136,23 @@ public class HaruhikageAddonSettings {
     )
     public static boolean logLiquidPocketPopulation = false;
 
+    @Rule(
+        desc = "x",
+        categories = {fallingblock},
+        options = {"true", "false"}
+    )
+    public static int logX = 0;
+    @Rule(
+        desc = "y",
+        categories = {fallingblock},
+        options = {"true", "false"}
+    )
+    public static int logY = 0;
+    @Rule(
+        desc = "z",
+        categories = {fallingblock},
+        options = {"true", "false"}
+    )
+    public static int logZ = 0;
+
 }
