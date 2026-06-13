@@ -4,6 +4,7 @@ import carpet.CarpetExtension;
 import carpet.CarpetServer;
 import haruhikage.command.ChunkTrackCommand;
 import haruhikage.command.LoadedChunksCommand;
+import haruhikage.command.PredictGatewayCommand;
 import haruhikage.command.PaletteCommand;
 import haruhikage.command.SearchCommand;
 import haruhikage.utils.HaruhikageAddonTranslations;
@@ -34,6 +35,7 @@ public class HaruhikageAddonServer implements CarpetExtension {
         registry.register(new SearchCommand());
         registry.register(new ChunkTrackCommand());
         registry.register(new LoadedChunksCommand());
+        registry.register(new PredictGatewayCommand());
         registry.register(new PaletteCommand());
     }
 

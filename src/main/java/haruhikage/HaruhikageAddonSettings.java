@@ -1,6 +1,8 @@
 package haruhikage;
 
+import carpet.CarpetSettings;
 import carpet.api.settings.Rule;
+import carpet.api.settings.RuleCategory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -72,6 +74,14 @@ public class HaruhikageAddonSettings {
         options = {"true", "false"}
     )
     public static boolean paletteCommand = false;
+
+    @Rule(
+        desc = "Enables the /predictGateway command to debug gateway placement.",
+        extra = {"Will generate chunks!"},
+        categories = { RuleCategory.COMMAND, RuleCategory.CREATIVE },
+        options = {"true", "false"}
+    )
+    public static boolean predictGatewayCommand = false;
 
     @Rule(
             desc = "Disables terrain population. Useful when testing and interacting with contraptions with unpopulated chunks",
