@@ -83,6 +83,17 @@ public class HaruhikageAddonSettings {
     )
     public static boolean predictGatewayCommand = false;
 
+
+    @Rule(
+        desc = "Make linking end gateway check for blocks in sections, instead of section being created, like 1.14+",
+        extra = {
+            "Removing all blocks above the first chunk section (y >= 16) will make the search skip the chunk."
+        },
+        categories = { RuleCategory.BUGFIX, RuleCategory.FEATURE },
+        options = {"true", "false"}
+    )
+    public static boolean gatewaySectionCheckFix = false;
+
     @Rule(
             desc = "Disables terrain population. Useful when testing and interacting with contraptions with unpopulated chunks",
             categories = {fallingblock},
