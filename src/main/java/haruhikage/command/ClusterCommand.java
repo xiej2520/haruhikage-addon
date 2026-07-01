@@ -20,6 +20,7 @@ import net.minecraft.server.command.source.CommandSource;
 import net.minecraft.util.HttpUtil;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.math.Direction;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -100,7 +101,10 @@ public class ClusterCommand extends CarpetAbstractCommand {
                 try {
                     NbtCompound compound = SnbtParser.parse(args[1]);
                     tempData = new ClusterHelper.ClusterData(compound);
-                    Messenger.m(sender, "w Data successfully read! ");
+
+                    Messenger.m(sender, "w Data parsed from SNBT! ");
+                    this.validateReadParameters(sender);
+
                 } catch (NbtException e) {
                     throw new CommandException("Malformed NBT");
                 }
@@ -163,6 +167,34 @@ public class ClusterCommand extends CarpetAbstractCommand {
                 break;
             default:
                 throw new IncorrectUsageException(getUsage(sender));
+        }
+    }
+
+    public void validateReadParameters(CommandSource sender) throws IncorrectUsageException {
+        if (tempData.startPos.x >= tempData.endPos.x) {
+            throw new IncorrectUsageException("startX should be < endX");
+        }
+        if (tempData.startPos.z >= tempData.endPos.z) {
+            throw new IncorrectUsageException("startZ should be < endZ");
+        }
+        if (Integer.bitCount(tempData.hashSize) != 1) {
+            throw new IncorrectUsageException("hashSize should be a power of 2");
+        }
+
+        if (tempData.clusterWidth * tempData.maximalClusterHeight < tempData.hashSize) {
+            Messenger.m(sender, "y Warning: clusterWidth * maximalClusterHeight should be > hashSize for best results");
+        }
+
+        int x0 = tempData.clusterCornerPos.x + (Direction.WEST.equals(tempData.widthDir) ? -1 : 1) * tempData.clusterWidth;
+        int minX = Math.min(tempData.clusterCornerPos.x, x0);
+        int maxX = Math.max(tempData.clusterCornerPos.x, x0);
+
+        int z0 = tempData.clusterCornerPos.z + (Direction.NORTH.equals(tempData.heightDir) ? -1 : 1) * tempData.maximalClusterHeight;
+        int minZ = Math.min(tempData.clusterCornerPos.z, z0);
+        int maxZ = Math.max(tempData.clusterCornerPos.z, z0);
+
+        if (Math.max(minX, minZ) <= Math.min(maxX, maxZ) || Math.max(minX, -maxZ) <= Math.min(maxX, -minZ)) {
+            Messenger.m(sender, "y Warning: cluster grid may cross over world diagonals!");
         }
     }
 }
