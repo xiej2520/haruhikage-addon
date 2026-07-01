@@ -5,6 +5,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Direction;
 import org.apache.commons.lang3.tuple.Pair;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -182,10 +183,14 @@ public class ClusterHelper {
             if (compound.contains("widthDir") && ((facing = Direction.BY_NAME.get(compound.getString("widthDir"))) != null)
                 && facing.getOffsetY() == 0) {
                 this.widthDir = facing;
+            } else {
+                this.widthDir = Direction.EAST;
             }
             if (compound.contains("heightDir") && ((facing = Direction.BY_NAME.get(compound.getString("heightDir"))) != null)
                 && facing.getOffsetY() == 0 && facing.getAxis() != widthDir.getAxis()) {
                 this.heightDir = facing;
+            } else {
+                this.heightDir = Direction.SOUTH;
             }
 
             if (compound.contains("clusterWidth")) {
