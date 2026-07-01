@@ -136,7 +136,7 @@ public class LoadedChunksCommand extends CarpetAbstractCommand {
     protected void size(CommandSource sender) throws NoSuchFieldException, IllegalAccessException {
         Long2ObjectOpenHashMap<WorldChunk> loadedChunks = this.getLoadedChunks(sender);
         int maxField = getMaxField(loadedChunks);
-        int capacity = getMask(loadedChunks) + 1;
+        int capacity = getValues(loadedChunks).length;
         Messenger.m(sender,
             String.format("w HashMap size is %d / %d, (%.2f). %d downsize, %d upsize",
                 loadedChunks.size(), capacity, getFillLevel(loadedChunks), maxField / 4, maxField)
