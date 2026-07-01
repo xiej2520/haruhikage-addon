@@ -43,7 +43,7 @@ public abstract class ServerChunkCacheMixin {
         }
 
         // Chunk Tracking - Unloading Events
-        if (HaruhikageAddonSettings.chunkTrackCommand && !ChunkTrackCommand.chunks.isEmpty()) {
+        if (HaruhikageAddonSettings.loadedChunksCommand && !ChunkTrackCommand.chunks.isEmpty()) {
             for(ChunkPos pos : ChunkTrackCommand.chunks) {
                 if(this.unloadedChunk != null) {
                     if (pos.x == unloadedChunk.chunkX && pos.z == unloadedChunk.chunkZ) {
@@ -65,7 +65,7 @@ public abstract class ServerChunkCacheMixin {
     // Chunk Tracking - Loading events
     @Inject(method = "loadChunk", at = @At("RETURN"))
     private void sniffLoadChunkEvents(int chunkX, int chunkZ, CallbackInfoReturnable<WorldChunk> cir) {
-        if(HaruhikageAddonSettings.chunkTrackCommand && !ChunkTrackCommand.chunks.isEmpty()) {
+        if(HaruhikageAddonSettings.loadedChunksCommand && !ChunkTrackCommand.chunks.isEmpty()) {
             for(ChunkPos pos : ChunkTrackCommand.chunks) {
                 if(pos.x == chunkX && pos.z == chunkZ) {
                     HaruhikageAddonSettings.LOGGER.info("+ Chunk {} {} has been loaded!", chunkX, chunkZ);
