@@ -1,20 +1,28 @@
-package carpet;
+package haruhikage.utils.cluster;
 
 import it.unimi.dsi.fastutil.HashCommon;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.math.Direction;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.IntStream;
+
+// credit: RoyanAB, Void-Skeleton
 
 public class ClusterUtil {
     public static final List<ChunkPos> EXCLUDED_RELATIVE_POS = Arrays.asList(new ChunkPos(0, 0), new ChunkPos(0, 1), new ChunkPos(1, 0), new ChunkPos(1, 1));
 
-    public static List<ChunkPos> computeClusterChunks(int hashSize, int maximalClusterHeight, int hashStart, int length, Object2IntOpenHashMap<ChunkPos>[] hashChunkToHeight, int[][] cumulativeHashHeightToChunkCount) {
+    public static List<ChunkPos> computeClusterChunks(
+        int hashSize,
+        int maximalClusterHeight,
+        int hashStart,
+        int length,
+        Object2IntOpenHashMap<ChunkPos>[] hashChunkToHeight,
+        int[][] cumulativeHashHeightToChunkCount
+    ) {
         int mask = hashSize - 1;
         List<ChunkPos> clusterChunks = new ArrayList<>();
 
@@ -24,7 +32,9 @@ public class ClusterUtil {
             int remainingLength = ((currentHash - hashStart) & mask) - currentLength;
             if (cumulativeHashHeightToChunkCount[currentHash][requiredHeight] < remainingLength || currentHash + 2 > hashSize) {
                 requiredHeight++;
-                if (requiredHeight >= maximalClusterHeight) return null;
+                if (requiredHeight >= maximalClusterHeight) {
+                    return null;
+                }
                 currentLength = 0;
                 currentHash = hashStart;
                 continue;
@@ -56,27 +66,39 @@ public class ClusterUtil {
         int[] clusteredHashes = new int[21];
         for (int x = -2; x <= 2; x++) {
             for (int z = -2; z <= 2; z++) {
-                if (!excludedRelativePos.contains(new ChunkPos(x, z)))
+                if (!excludedRelativePos.contains(new ChunkPos(x, z))) {
                     clusteredHashes[ptr++] = hashChunkPos(new ChunkPos(targetPos.x + x, targetPos.z + z), hashSize);
+                }
             }
         }
         Arrays.sort(clusteredHashes);
         return clusteredHashes;
     }
 
-    public static Pair<Object2IntOpenHashMap<ChunkPos>[], int[][]> precompute(int hashSize, int maximalClusterHeight, int clusterWidth, ChunkPos clusterCorner, EnumFacing clusterWidthDir, EnumFacing clusterHeightDir) {
+    public static Pair<Object2IntOpenHashMap<ChunkPos>[], int[][]> precompute(
+        int hashSize,
+        int maximalClusterHeight,
+        int clusterWidth,
+        ChunkPos clusterCorner,
+        Direction clusterWidthDir,
+        Direction clusterHeightDir
+    ) {
         int[][] hashHeightToChunkCount = new int[hashSize][maximalClusterHeight];
         int[][] cumulativeHashHeightToChunkCount = new int[hashSize][maximalClusterHeight];
+
+        @SuppressWarnings("unchecked")
         Object2IntOpenHashMap<ChunkPos>[] hashChunkToHeight = new Object2IntOpenHashMap[hashSize];
 
         for (int dw = 0; dw < clusterWidth; dw++) {
             for (int dh = 0; dh < maximalClusterHeight; dh++) {
                 ChunkPos pos = new ChunkPos(
-                    clusterCorner.x + dw * clusterWidthDir.getXOffset() + dh * clusterHeightDir.getXOffset(),
-                    clusterCorner.z + dw * clusterWidthDir.getZOffset() + dh * clusterHeightDir.getZOffset());
+                    clusterCorner.x + dw * clusterWidthDir.getOffsetX() + dh * clusterHeightDir.getOffsetX(),
+                    clusterCorner.z + dw * clusterWidthDir.getOffsetZ() + dh * clusterHeightDir.getOffsetZ());
                 int hash = hashChunkPos(pos, hashSize);
                 hashHeightToChunkCount[hash][dh]++;
-                if (hashChunkToHeight[hash] == null) hashChunkToHeight[hash] = new Object2IntOpenHashMap<>();
+                if (hashChunkToHeight[hash] == null) {
+                    hashChunkToHeight[hash] = new Object2IntOpenHashMap<>();
+                }
                 hashChunkToHeight[hash].put(pos, dh);
             }
         }
@@ -109,7 +131,7 @@ public class ClusterUtil {
     }
 
     public static int hashChunkPos(ChunkPos pos, int hashSize) {
-        return (int) (HashCommon.mix(ChunkPos.asLong(pos.x, pos.z)) & (hashSize - 1));
+        return (int) (HashCommon.mix(ChunkPos.toLong(pos.x, pos.z)) & (hashSize - 1));
     }
 
     public static int nextPowerOfTwo(int v) {
@@ -121,3 +143,4 @@ public class ClusterUtil {
         return v + 1;
     }
 }
+
