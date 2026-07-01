@@ -11,3 +11,6 @@ accessible field net/minecraft/world/chunk/LinearPalette size I
 
 # for /loadedChunks command
 accessible field net/minecraft/server/world/chunk/ServerChunkCache chunks Lit/unimi/dsi/fastutil/longs/Long2ObjectMap;
+
+# for /cluster command
+accessible field net/minecraft/util/math/Direction BY_NAME Ljava/util/Map;

@@ -76,6 +76,13 @@ public class HaruhikageAddonSettings {
     public static boolean paletteCommand = false;
 
     @Rule(
+        desc = "Enables the /cluster command to compute falling block swap clusters.",
+        categories = { fallingblock },
+        options = {"true", "false"}
+    )
+    public static boolean clusterCommand = false;
+
+    @Rule(
         desc = "Enables the /predictGateway command to debug gateway placement.",
         extra = {"Will generate chunks!"},
         categories = { RuleCategory.COMMAND, RuleCategory.CREATIVE },

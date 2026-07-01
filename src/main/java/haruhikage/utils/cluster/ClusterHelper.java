@@ -1,18 +1,25 @@
-package carpet;
+package haruhikage.utils.cluster;
 
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.math.Direction;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
+
+// credit: RoyanAB, Void-Skeleton
 
 public class ClusterHelper {
 
     public static ClusterHelper.ClusterData tempData;
 
-    private static ClusterHelper.ClusterData testTargetChunk(ClusterHelper.ClusterData data, Pair<Object2IntOpenHashMap<ChunkPos>[], int[][]> preData, ChunkPos targetPos, List<ChunkPos> excludedRelativePos) {
+    private static ClusterHelper.ClusterData testTargetChunk(
+        ClusterHelper.ClusterData data,
+        Pair<Object2IntOpenHashMap<ChunkPos>[], int[][]> preData,
+        ChunkPos targetPos,
+        List<ChunkPos> excludedRelativePos
+    ) {
         final int[] clusteredHashes = ClusterUtil.precomputeTargetChunk(data.hashSize, targetPos, excludedRelativePos);
 
         int bestHashStart = 0;
@@ -23,10 +30,21 @@ public class ClusterHelper {
             for (int idx = 0; idx < 21; idx++) {
                 int hashStart = clusteredHashes[idx];
                 int hashLength = ClusterUtil.getHashLength(idx, clusteredHashes, hashStart, data.desiredClustering);
-                if (hashLength < 0) continue;
+                if (hashLength < 0) {
+                    continue;
+                }
 
-                List<ChunkPos> clusterChunks = ClusterUtil.computeClusterChunks(data.hashSize, data.maximalClusterHeight, hashStart, hashLength, preData.getLeft(), preData.getRight());
-                if (clusterChunks == null) continue;
+                List<ChunkPos> clusterChunks = ClusterUtil.computeClusterChunks(
+                    data.hashSize,
+                    data.maximalClusterHeight,
+                    hashStart,
+                    hashLength,
+                    preData.getLeft(),
+                    preData.getRight()
+                );
+                if (clusterChunks == null) {
+                    continue;
+                }
 
                 clusterChunks.add(data.clusterCornerPos);
 
@@ -45,8 +63,9 @@ public class ClusterHelper {
             return null;
         }
 
-        if (minLoadingGridSize == Integer.MAX_VALUE || bestHashStart == 0 || bestClusterChunks.isEmpty() || bestMSTEdgeList.isEmpty())
+        if (minLoadingGridSize == Integer.MAX_VALUE || bestHashStart == 0 || bestClusterChunks.isEmpty() || bestMSTEdgeList.isEmpty()) {
             return null;
+        }
 
         ClusterHelper.ClusterData computedData = data.copy();
         computedData.hashStart = bestHashStart;
@@ -58,7 +77,9 @@ public class ClusterHelper {
 
     public static ClusterHelper.ClusterData compute(ClusterHelper.ClusterData data) {
         try {
-            Pair<Object2IntOpenHashMap<ChunkPos>[], int[][]> preData = ClusterUtil.precompute(data.hashSize, data.maximalClusterHeight, data.clusterWidth, data.clusterCornerPos, data.widthDir, data.heightDir);
+            Pair<Object2IntOpenHashMap<ChunkPos>[], int[][]> preData = ClusterUtil.precompute(
+                data.hashSize, data.maximalClusterHeight, data.clusterWidth, data.clusterCornerPos, data.widthDir, data.heightDir
+            );
             ClusterHelper.ClusterData bestData = data.copy();
 
             List<ChunkPos> tasks = new ArrayList<>();
@@ -72,7 +93,9 @@ public class ClusterHelper {
                 .map(chunk -> {
                     System.out.println(chunk.toString());
                     ClusterHelper.ClusterData computedData = testTargetChunk(data, preData, chunk, ClusterUtil.EXCLUDED_RELATIVE_POS);
-                    if (computedData == null) return null;
+                    if (computedData == null) {
+                        return null;
+                    }
                     return new AbstractMap.SimpleEntry<>(chunk, computedData);
                 })
                 .filter(Objects::nonNull)
@@ -100,8 +123,8 @@ public class ClusterHelper {
         public ChunkPos startPos;
         public ChunkPos endPos;
         public ChunkPos clusterCornerPos;
-        public EnumFacing widthDir;
-        public EnumFacing heightDir;
+        public Direction widthDir;
+        public Direction heightDir;
         public int clusterWidth;
         public int maximalClusterHeight;
         public int hashSize;
@@ -113,7 +136,17 @@ public class ClusterHelper {
         public int loadingGridSize;
         public ChunkPos targetChunk;
 
-        public ClusterData(ChunkPos startPos, ChunkPos endPos, ChunkPos clusterCornerPos, EnumFacing widthDir, EnumFacing heightDir, int clusterWidth, int maximalClusterHeight, int hashSize, int desiredClustering) {
+        public ClusterData(
+            ChunkPos startPos,
+            ChunkPos endPos,
+            ChunkPos clusterCornerPos,
+            Direction widthDir,
+            Direction heightDir,
+            int clusterWidth,
+            int maximalClusterHeight,
+            int hashSize,
+            int desiredClustering
+        ) {
             this.startPos = startPos;
             this.endPos = endPos;
             this.clusterCornerPos = clusterCornerPos;
@@ -125,57 +158,69 @@ public class ClusterHelper {
             this.desiredClustering = desiredClustering;
         }
 
-        public ClusterData(NBTTagCompound compound) {
-            if (compound.hasKey("startX") && compound.hasKey("startZ"))
+        public ClusterData(NbtCompound compound) {
+            if (compound.contains("startX") && compound.contains("startZ")) {
                 this.startPos = new ChunkPos(
-                    compound.getInteger("startX"),
-                    compound.getInteger("startZ")
+                    compound.getInt("startX"),
+                    compound.getInt("startZ")
                 );
-            if (compound.hasKey("endX") && compound.hasKey("endZ"))
+            }
+            if (compound.contains("endX") && compound.contains("endZ")) {
                 this.endPos = new ChunkPos(
-                    compound.getInteger("endX"),
-                    compound.getInteger("endZ")
+                    compound.getInt("endX"),
+                    compound.getInt("endZ")
                 );
-            if (compound.hasKey("clusterCornerX") && compound.hasKey("clusterCornerZ"))
+            }
+            if (compound.contains("clusterCornerX") && compound.contains("clusterCornerZ")) {
                 this.clusterCornerPos = new ChunkPos(
-                    compound.getInteger("clusterCornerX"),
-                    compound.getInteger("clusterCornerZ")
+                    compound.getInt("clusterCornerX"),
+                    compound.getInt("clusterCornerZ")
                 );
+            }
 
-            EnumFacing facing;
-            if (compound.hasKey("widthDir") && ((facing = EnumFacing.NAME_LOOKUP.get(compound.getString("widthDir"))) != null)
-                && facing.getYOffset() == 0) this.widthDir = facing;
-            if (compound.hasKey("heightDir") && ((facing = EnumFacing.NAME_LOOKUP.get(compound.getString("heightDir"))) != null)
-                && facing.getYOffset() == 0 && facing.getAxis() != widthDir.getAxis()) this.heightDir = facing;
+            Direction facing;
+            if (compound.contains("widthDir") && ((facing = Direction.BY_NAME.get(compound.getString("widthDir"))) != null)
+                && facing.getOffsetY() == 0) {
+                this.widthDir = facing;
+            }
+            if (compound.contains("heightDir") && ((facing = Direction.BY_NAME.get(compound.getString("heightDir"))) != null)
+                && facing.getOffsetY() == 0 && facing.getAxis() != widthDir.getAxis()) {
+                this.heightDir = facing;
+            }
 
-            if (compound.hasKey("clusterWidth")) this.clusterWidth = Math.max(0, compound.getInteger("clusterWidth"));
-            if (compound.hasKey("maxClusterHeight"))
-                this.maximalClusterHeight = Math.max(0, compound.getInteger("maxClusterHeight"));
+            if (compound.contains("clusterWidth")) {
+                this.clusterWidth = Math.max(0, compound.getInt("clusterWidth"));
+            }
+            if (compound.contains("maxClusterHeight")) {
+                this.maximalClusterHeight = Math.max(0, compound.getInt("maxClusterHeight"));
+            }
 
-            if (compound.hasKey("hashSize"))
-                this.hashSize = ClusterUtil.nextPowerOfTwo(Math.max(1, compound.getInteger("hashSize") - 1));
-            if (compound.hasKey("desiredClustering"))
-                this.desiredClustering = Math.max(0, compound.getInteger("desiredClustering"));
+            if (compound.contains("hashSize")) {
+                this.hashSize = ClusterUtil.nextPowerOfTwo(Math.max(1, compound.getInt("hashSize") - 1));
+            }
+            if (compound.contains("desiredClustering")) {
+                this.desiredClustering = Math.max(0, compound.getInt("desiredClustering"));
+            }
         }
 
-        public NBTTagCompound writeToNBT(NBTTagCompound compound) {
-            compound.setInteger("startX", startPos.x);
-            compound.setInteger("startZ", startPos.z);
+        public NbtCompound writeToNBT(NbtCompound compound) {
+            compound.putInt("startX", startPos.x);
+            compound.putInt("startZ", startPos.z);
 
-            compound.setInteger("endX", endPos.x);
-            compound.setInteger("endZ", endPos.z);
+            compound.putInt("endX", endPos.x);
+            compound.putInt("endZ", endPos.z);
 
-            compound.setInteger("clusterCornerX", clusterCornerPos.x);
-            compound.setInteger("clusterCornerZ", clusterCornerPos.z);
+            compound.putInt("clusterCornerX", clusterCornerPos.x);
+            compound.putInt("clusterCornerZ", clusterCornerPos.z);
 
-            compound.setString("widthDir", widthDir.getName2());
-            compound.setString("heightDir", heightDir.getName2());
+            compound.putString("widthDir", widthDir.getName());
+            compound.putString("heightDir", heightDir.getName());
 
-            compound.setInteger("clusterWidth", clusterWidth);
-            compound.setInteger("maxClusterHeight", maximalClusterHeight);
+            compound.putInt("clusterWidth", clusterWidth);
+            compound.putInt("maxClusterHeight", maximalClusterHeight);
 
-            compound.setInteger("hashSize", hashSize);
-            compound.setInteger("desiredClustering", desiredClustering);
+            compound.putInt("hashSize", hashSize);
+            compound.putInt("desiredClustering", desiredClustering);
             return compound;
         }
 
@@ -188,3 +233,4 @@ public class ClusterHelper {
         }
     }
 }
+
